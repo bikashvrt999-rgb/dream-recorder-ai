@@ -1,1 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#070b18">
 
+<title>DREAM RECORDER AI</title>
+
+<style>
+:root {
+  --bg: #070b18;
+  --panel: #10182b;
+  --border: #243453;
+  --blue: #55d9ff;
+  --purple: #a78bfa;
+  --text: #edf4ff;
+  --muted: #98a9c5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse at top, #18264b 0%, #070b18 55%);
+  color: var(--text);
+  font-family: system-ui, Arial, sans-serif;
+  min-height: 100vh;
+}
+
+header {
+  padding: 22px 5%;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.logo {
+  font-size: 19px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.logo span {
+  color: var(--blue);
+}
+
+.badge {
+  color: var(--blue);
+  font-size: 11px;
+  border: 1px solid #315778;
+  border-radius: 20px;
+  padding: 7px 11px;
+}
+
+main {
+  width: min(1100px, 92%);
+  margin: auto;
+  padding: 35px 0 50px;
+}
+
+.hero {
+  text-align: center;
+  padding: 25px 0 30px;
+}
+
+.eyebrow {
+  color: var(--blue);
+  letter-spacing: 4px;
+  font-size: 11px;
+}
+
+h1 {
+  font-size: clamp(35px, 8vw, 66px);
+  line-height: 1.05;
+  margin: 18px 0;
+  letter-spacing: -2px;
+}
+
+h1 span {
+  background: linear-gradient(90deg, var(--blue), var(--purple));
+  color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  max-width: 580px;
+  margin: auto;
+  line-height: 1.8;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: linear-gradient(145deg, #121d35, #0b1121);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 21px;
+  min-width: 0;
+  box-shadow: 0 10px 35px #0002;
+}
+
+.card h2 {
+  font-size: 17px;
+  margin: 0 0 8px;
+}
+
+.desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 0 0 17px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #8cefc1;
+  margin-bottom: 12px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: #58edac;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #58edac;
+}
+
+#brainCanvas {
+  width: 100%;
+  height: 125px;
+  display: block;
+  border-radius: 10px;
+  background: #080f20;
+  margin: 12px 0;
+}
+
+.metrics {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 13px;
+}
+
+.metric {
+  background: #17233a;
+  padding: 10px;
+  border-radius: 9px;
+  flex: 1;
+  min-width: 0;
+}
+
+.metric small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.metric strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 15px;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 13px 15px;
+  transition: transform .2s, opacity .2s;
+}
+
+button:active {
+  transform: scale(.98);
+}
+
+.primary {
+  width: 100%;
+  color: #06101d;
+  background: linear-gradient(90deg, var(--blue), #a5a4ff);
+}
+
+.secondary {
+  background: #1b2945;
+  color: var(--text);
+  border: 1px solid #344a70;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.button-row button {
+  flex: 1;
+}
+
+textarea, input {
+  display: block;
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #2a3c5c;
+  background: #080f20;
+  color: white;
+  padding: 13px;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+textarea {
+  min-height: 125px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+textarea:focus, input:focus {
+  border-color: var(--blue);
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 12px 0 7px;
+}
+
+.result {
+  background: #080f20;
+  border: 1px solid #2a3c5c;
+  border-radius: 10px;
+  padding: 14px;
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.history-item {
+  border-left: 2px solid var(--purple);
+  background: #0a1224;
+  padding: 12px;
+  border-radius: 5px 10px 10px 5px;
+  margin-top: 10px;
+}
+
+.history-item small {
+  color: var(--blue);
+}
+
+.history-item p {
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.history-item button {
+  padding: 7px 10px;
+  font-size: 11px;
+}
+
+.empty {
+  font-size: 13px;
+  color: var(--muted);
+  padding: 12px 0;
+}
+
+.device {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px;
+  border: 1px solid #2a3c5c;
+  border-radius: 12px;
+  margin: 15px 0;
+}
+
+.device-icon {
+  font-size: 28px;
+}
+
+footer {
+  border-top: 1px solid var(--border);
+  padding: 25px 5%;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.notice {
+  border: 1px solid #65552e;
+  background: #241d10;
+  color: #f3dba1;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.7;
+  margin-top: 15px;
+}
+
+.hidden {
+  display: none;
+}
+
+@media(max-width: 650px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full {
+    grid-column: auto;
+  }
+
+  main {
+    width: 92%;
+    padding-top: 20px;
+  }
+
+  .card {
+    padding: 17px;
+  }
+
+  h1 {
+    letter-spacing: -1px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">DREAM<span>RECORDER</span> AI</div>
+  <div class="badge">RESEARCH PROJECT 001</div>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="eyebrow">THE FUTURE OF DREAM RESEARCH</div>
+  <h1>Explore Your<br><span>Dream Universe.</span></h1>
+  <p>
+    Record your dream memories, explore AI-assisted visualizations,
+    and prepare for future brain-signal research.
+  </p>
+</section>
+
+<div class="grid">
+
+<section class="card">
+  <h2>🧠 Brainwave Monitor</h2>
+  <p class="desc">
+    A simulated visualization. No real brain signals are measured.
+  </p>
+
+  <div class="status">
+    <span class="dot"></span>
+    DEMO SIMULATION
+  </div>
+
+  <canvas id="brainCanvas"></canvas>
+
+  <div class="metrics">
+    <div class="metric">
+      <small>DISPLAY</small>
+      <strong>ACTIVE</strong>
+    </div>
+    <div class="metric">
+      <small>EEG DEVICE</small>
+      <strong>NOT CONNECTED</strong>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>🌙 Dream Session</h2>
+  <p class="desc">
+    Start a session to record the time you begin your dream journal.
+    This does not record sleep or brain activity.
+  </p>
+
+  <div class="metric" style="margin-bottom:15px">
+    <small>SESSION STATUS</small>
+    <strong id="sessionStatus">READY TO BEGIN</strong>
+  </div>
+
+  <div class="metric" style="margin-bottom:15px">
+    <small>SESSION TIMER</small>
+    <strong id="timer">00:00:00</strong>
+  </div>
+
+  <button class="primary" id="sessionButton" onclick="toggleSession()">
+    START DREAM SESSION
+  </button>
+</section>
+
+<section class="card">
+  <h2>📝 Dream Journal</h2>
+  <p class="desc">
+    Write down what you remember after waking up.
+  </p>
+
+  <label for="dreamInput">DESCRIBE YOUR DREAM</label>
+
+  <textarea id="dreamInput"
+    placeholder="Example: I was walking through a beautiful forest under a purple sky..."></textarea>
+
+  <label for="moodInput">HOW DID YOU FEEL?</label>
+
+  <select id="moodInput"
+    style="width:100%;padding:12px;background:#080f20;color:white;border:1px solid #2a3c5c;border-radius:10px">
+    <option>Peaceful</option>
+    <option>Happy</option>
+    <option>Curious</option>
+    <option>Confused</option>
+    <option>Scared</option>
+    <option>Sad</option>
+    <option>Other</option>
+  </select>
+
+  <div class="button-row" style="margin-top:15px">
+    <button class="primary" onclick="saveDream()">SAVE DREAM</button>
+    <button class="secondary" onclick="clearJournal()">CLEAR</button>
+  </div>
+</section>
+
+<section class="card">
+  <h2>🎨 Dream Visualizer</h2>
+  <p class="desc">
+    Turn your remembered dream into a prompt for an AI image generator.
+  </p>
+
+  <label for="styleInput">VISUAL STYLE</label>
+
+  <select id="styleInput"
+    style="width:100%;padding:12px;background:#080f20;color:white;border:1px solid #2a3c5c;border-radius:10px">
+    <option>Cinematic surrealism</option>
+    <option>Photorealistic dream</option>
+    <option>Fantasy art</option>
+    <option>Anime illustration</option>
+    <option>Cosmic science fiction</option>
+  </select>
+
+  <button class="primary" style="margin-top:15px"
+    onclick="createPrompt()">CREATE DREAM PROMPT</button>
+
+  <div id="promptResult" class="result hidden"></div>
+
+  <button id="copyButton" class="secondary hidden"
+    style="width:100%;margin-top:10px"
+    onclick="copyPrompt()">COPY PROMPT</button>
+
+  <p class="desc" style="margin-top:12px;margin-bottom:0">
+    This creates text only. An external image-generation AI is needed
+    to render the actual image.
+  </p>
+</section>
+
+<section class="card full">
+  <h2>🗂️ Dream History</h2>
+  <p class="desc">
+    Your saved dream notes on this device.
+  </p>
+
+  <div id="historyList">
+    <div class="empty">Your dream history will appear here.</div>
+  </div>
+
+  <button class="secondary" onclick="exportHistory()"
+    style="margin-top:15px">EXPORT DREAM HISTORY</button>
+</section>
+
+<section class="card full">
+  <h2>🔌 Future EEG Device Connection</h2>
+
+  <p class="desc">
+    This section is reserved for a future compatible EEG device
+    and validated brain-signal analysis software.
+  </p>
+
+  <div class="device">
+    <div class="device-icon">🧠</div>
+    <div>
+      <strong>EEG Research Interface</strong>
+      <div class="desc" style="margin:5px 0 0">
+        Hardware integration not yet implemented.
+      </div>
+    </div>
+  </div>
+
+  <button class="secondary" style="width:100%"
+    onclick="showDeviceInfo()">CHECK DEVICE STATUS</button>
+
+  <div id="deviceInfo" class="result hidden"></div>
+
+  <div class="notice">
+    SCIENCE NOTE: EEG measures electrical activity at the scalp.
+    It does not directly reveal a complete visual recording of a dream.
+    Dream reconstruction from brain signals remains a research challenge.
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer>
+  DREAM RECORDER AI · INDEPENDENT CONCEPT PROJECT<br>
+  Version 1.0 · Dream journaling and visualization prototype<br>
+  Not a medical device. No real EEG recording or dream decoding is performed.
+</footer>
+
+<script>
+const canvas = document.getElementById("brainCanvas");
+const ctx = canvas.getContext("2d");
+
+let phase = 0;
+
+function drawBrainwave() {
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+
+  if (canvas.width !== Math.round(rect.width * dpr) ||
+      canvas.height !== Math.round(rect.height * dpr)) {
+    canvas.width = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
+  }
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const w = rect.width;
+  const h = rect.height;
+
+  ctx.clearRect(0, 0, w, h);
+
+  ctx.strokeStyle = "#172944";
+  ctx.lineWidth = 1;
+
+  for (let x = 0; x < w; x += 25) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, h);
+    ctx.stroke();
+  }
+
+  for (let y = 0; y < h; y += 25) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(w, y);
+    ctx.stroke();
+  }
+
+  ctx.beginPath();
+
+  for (let x = 0; x < w; x++) {
+    const y =
+      h / 2 +
+      Math.sin(x * 0.055 + phase) * 17 +
+      Math.sin(x * 0.12 + phase * 1.7) * 7 +
+      Math.sin(x * 0.021 - phase) * 12;
+
+    if (x === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+  }
+
+  ctx.strokeStyle = "#55d9ff";
+  ctx.lineWidth = 2;
+  ctx.shadowBlur = 9;
+  ctx.shadowColor = "#55d9ff";
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  phase += 0.035;
+
+  requestAnimationFrame(drawBrainwave);
+}
+
+drawBrainwave();
+
+let sessionActive = false;
+let sessionStart = 0;
+let timerInterval = null;
+
+function toggleSession() {
+  const button = document.getElementById("sessionButton");
+  const status = document.getElementById("sessionStatus");
+
+  if (!sessionActive) {
+    sessionActive = true;
+    sessionStart = Date.now();
+
+    status.textContent = "SESSION IN PROGRESS";
+    button.textContent = "END DREAM SESSION";
+
+    timerInterval = setInterval(updateTimer, 1000);
+    updateTimer();
+  } else {
+    sessionActive = false;
+
+    clearInterval(timerInterval);
+
+    status.textContent = "SESSION ENDED";
+    button.textContent = "START NEW SESSION";
+  }
+}
+
+function updateTimer() {
+  if (!sessionActive) return;
+
+  const elapsed = Math.floor((Date.now() - sessionStart) / 1000);
+
+  const hours = String(Math.floor(elapsed / 3600)).padStart(2, "0");
+  const minutes = String(Math.floor((elapsed % 3600) / 60)).padStart(2, "0");
+  const seconds = String(elapsed % 60).padStart(2, "0");
+
+  document.getElementById("timer").textContent =
+    `${hours}:${minutes}:${seconds}`;
+}
+
+function getDreams() {
+  try {
+    return JSON.parse(localStorage.getItem("dreamRecorderHistory") || "[]");
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveDream() {
+  const input = document.getElementById("dreamInput");
+  const mood = document.getElementById("moodInput").value;
+  const text = input.value.trim();
+
+  if (!text) {
+    alert("Please write your dream first.");
+    input.focus();
+    return;
+  }
+
+  const dreams = getDreams();
+
+  dreams.unshift({
+    id: Date.now(),
+    date: new Date().toLocaleString(),
+    text: text,
+    mood: mood
+  });
+
+  try {
+    localStorage.setItem(
+      "dreamRecorderHistory",
+      JSON.stringify(dreams.slice(0, 100))
+    );
+  } catch (error) {
+    alert("Could not save the dream. Your browser storage may be full.");
+    return;
+  }
+
+  input.value = "";
+  renderHistory();
+
+  alert("Dream saved on this device!");
+}
+
+function clearJournal() {
+  document.getElementById("dreamInput").value = "";
+}
+
+function renderHistory() {
+  const list = document.getElementById("historyList");
+  const dreams = getDreams();
+
+  list.replaceChildren();
+
+  if (!dreams.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "Your dream history will appear here.";
+    list.appendChild(empty);
+    return;
+  }
+
+  dreams.forEach(dream => {
+    const item = document.createElement("div");
+    item.className = "history-item";
+
+    const date = document.createElement("small");
+    date.textContent = dream.date + " · " + dream.mood;
+
+    const paragraph = document.createElement("p");
+    paragraph.textContent = dream.text;
+
+    const button = document.createElement("button");
+    button.className = "secondary";
+    button.textContent = "DELETE ENTRY";
+
+    button.addEventListener("click", () => {
+      const updated = getDreams().filter(d => d.id !== dream.id);
+
+      localStorage.setItem(
+        "dreamRecorderHistory",
+        JSON.stringify(updated)
+      );
+
+      renderHistory();
+    });
+
+    item.append(date, paragraph, button);
+    list.appendChild(item);
+  });
+}
+
+let currentPrompt = "";
+
+function createPrompt() {
+  const dream = document.getElementById("dreamInput").value.trim();
+  const style = document.getElementById("styleInput").value;
+
+  if (!dream) {
+    alert("Write a dream description in the Dream Journal first.");
+    return;
+  }
+
+  currentPrompt =
+    "Create an original visual interpretation of this remembered dream. " +
+    "Visual style: " + style + ". " +
+    "Dream description: " + dream + ". " +
+    "Use atmospheric lighting, rich details, coherent composition, " +
+    "and imaginative but visually consistent scenery. " +
+    "This is an artistic interpretation, not a verified recording.";
+
+  const result = document.getElementById("promptResult");
+  result.textContent = currentPrompt;
+  result.classList.remove("hidden");
+
+  document.getElementById("copyButton").classList.remove("hidden");
+}
+
+async function copyPrompt() {
+  try {
+    await navigator.clipboard.writeText(currentPrompt);
+    alert("Prompt copied! Paste it into an AI image generator.");
+  } catch (error) {
+    const area = document.createElement("textarea");
+    area.value = currentPrompt;
+    document.body.appendChild(area);
+    area.select();
+
+    const copied = document.execCommand("copy");
+    area.remove();
+
+    alert(copied
+      ? "Prompt copied!"
+      : "Please select and copy the prompt manually.");
+  }
+}
+
+function showDeviceInfo() {
+  const info = document.getElementById("deviceInfo");
+
+  info.textContent =
+    "EEG DEVICE: NOT CONNECTED\n\n" +
+    "No physical EEG hardware has been detected or accessed. " +
+    "A compatible device, supported data interface, and signal " +
+    "processing implementation are required for future integration.";
+
+  info.classList.remove("hidden");
+}
+
+function exportHistory() {
+  const dreams = getDreams();
+
+  if (!dreams.length) {
+    alert("There are no saved dreams to export.");
+    return;
+  }
+
+  const blob = new Blob(
+    [JSON.stringify(dreams, null, 2)],
+    { type: "application/json" }
+  );
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = "dream-recorder-history.json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+renderHistory();
+</script>
+
+</body>
+</html>
